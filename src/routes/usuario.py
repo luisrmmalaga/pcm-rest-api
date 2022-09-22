@@ -14,7 +14,6 @@ def get_all_users():
 @user.post('/user', response_model=Usuario, tags=["Usuarios"])
 def create_user(user: Usuario):
     new_user = dict(user)
-    new_user['_id'] = ObjectId(user._id)
     new_user['coordenadas'] = dict(user.coordenadas)
 
     id =  connection.PCM.Usuario.insert_one(new_user).inserted_id
