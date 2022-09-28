@@ -11,7 +11,7 @@ user = APIRouter()
 def get_all_users():
     return usersEntity(connection.PCM.Usuario.find())
 
-@user.post('/user', response_model=Usuario, tags=["Usuarios"])
+@user.post('/user', response_model=ObjectId, tags=["Usuarios"])
 def create_user(user: Usuario):
     new_user = dict(user)
     new_user['coordenadas'] = dict(user.coordenadas)
@@ -19,7 +19,7 @@ def create_user(user: Usuario):
     id =  connection.PCM.Usuario.insert_one(new_user).inserted_id
     user = connection.PCM.Usuario.find_one({"_id":id})
 
-    return userEntity(user)
+    return id
 
 @user.get('/user/{id}', response_model=Usuario, tags=["Usuarios"])
 def get__user(id: str):
