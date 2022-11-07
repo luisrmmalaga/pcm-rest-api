@@ -1,9 +1,10 @@
+from bson import ObjectId
 from fastapi import APIRouter, Response, status
+from starlette.status import HTTP_204_NO_CONTENT
+
 from config.db import connection
 from models.usuario import Usuario
 from schemas.usuario import userEntity, usersEntity
-from bson import ObjectId
-from starlette.status import HTTP_204_NO_CONTENT
 
 user = APIRouter()
 
@@ -21,7 +22,7 @@ def create_user(user: Usuario):
     return str(id)
 
 @user.get('/user/{id}', response_model=Usuario, tags=["Usuarios"])
-def get__user(id: str):
+def get_user(id: str):
     return userEntity(connection.PCM.Usuario.find_one({"_id":ObjectId(id)}))
 
 @user.put('/user/{id}', response_model=Usuario, tags=["Usuarios"])
