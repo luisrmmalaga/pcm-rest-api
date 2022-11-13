@@ -22,9 +22,9 @@ def create_favourite(favorito: Favorito):
 
     return favoritoEntity(favorito)
 
-@favorito.get('/favourites/{id}', response_model=Favorito, tags=["Favoritos"])
+@favorito.get('/favourites/{id}', response_model=list[Favorito], tags=["Favoritos"])
 def get_favourites_by_user_id(id: str):
-    return favoritoEntity(connection.PCM.Favorito.find({"idUsuario":id}))
+    return favoritosEntity(connection.PCM.Favorito.find({"idUsuario":id}))
 
 @favorito.put('/favourite/{id}', response_model=Favorito, tags=["Favoritos"])
 def update_favourite(id: str, favorito: Favorito):
