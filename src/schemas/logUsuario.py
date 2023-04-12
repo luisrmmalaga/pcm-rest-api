@@ -3,8 +3,8 @@ def logUserEntity(item) -> dict:
         "_id":str(item["_id"]),
         "idUsuario":item["idUsuario"],
         "coordenadas":{
-            "latitud":item["coordenadas"]["latitud"],
-            "longitud":item["coordenadas"]["longitud"],
+            "longitud":item["coordenadas"]["coordinates"][0],
+            "latitud":item["coordenadas"]["coordinates"][1],
         },
         "timestamp": item["timestamp"],
     }

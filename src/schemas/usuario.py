@@ -5,8 +5,8 @@ def userEntity(item) -> dict:
         "timestampFin": item["timestampFin"],
         "timestampUltimoRegistro": item["timestampUltimoRegistro"],
         "coordenadas":{
-            "latitud":item["coordenadas"]["latitud"],
-            "longitud":item["coordenadas"]["longitud"],
+            "longitud":item["coordenadas"]["coordinates"][0],
+            "latitud":item["coordenadas"]["coordinates"][1],
         },
     }
 

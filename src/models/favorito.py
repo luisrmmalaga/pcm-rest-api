@@ -9,5 +9,7 @@ class Favorito(BaseModel):
     idUsuario: str
     nombre: str
     coordenadas: Coordenadas
+    timestampCreacion: float
     timestampUltimaMuestra: float
-    densidad: int
+    densidad: float
+    radio: int

@@ -5,6 +5,7 @@ from starlette.status import HTTP_204_NO_CONTENT
 from config.db import connection
 from models.usuario import Usuario
 from schemas.usuario import userEntity, usersEntity
+from tools.geolocation import get_geoJSON_coordinates
 
 user = APIRouter()
 
@@ -15,9 +16,9 @@ def get_all_users():
 @user.post('/user', tags=["Usuarios"])
 def create_user(user: Usuario):
     new_user = dict(user)
-    new_user['coordenadas'] = dict(user.coordenadas)
+    new_user['coordenadas'] = get_geoJSON_coordinates(dict(user.coordenadas))
 
-    id =  connection.PCM.Usuario.insert_one(new_user).inserted_id
+    id = connection.PCM.Usuario.insert_one(new_user).inserted_id
 
     return str(id)
 
@@ -28,7 +29,7 @@ def get_user(id: str):
 @user.put('/user/{id}', response_model=Usuario, tags=["Usuarios"])
 def update_user(id: str, user: Usuario):
     update_user = dict(user)
-    update_user['coordenadas'] = dict(user.coordenadas)
+    update_user['coordenadas'] = get_geoJSON_coordinates(dict(user.coordenadas))
     connection.PCM.Usuario.find_one_and_update({"_id":ObjectId(id)},{"$set":dict(update_user)})
     return userEntity(connection.PCM.Usuario.find_one({"_id":ObjectId(id)}))
 

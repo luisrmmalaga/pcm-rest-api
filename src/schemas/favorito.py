@@ -4,11 +4,13 @@ def favoritoEntity(item) -> dict:
         "idUsuario":item["idUsuario"],
         "nombre":item["nombre"],
         "coordenadas":{
-            "latitud":item["coordenadas"]["latitud"],
-            "longitud":item["coordenadas"]["longitud"],
+            "longitud":item["coordenadas"]["coordinates"][0],
+            "latitud":item["coordenadas"]["coordinates"][1],
         },
+        "timestampCreacion":item["timestampCreacion"],
         "timestampUltimaMuestra": item["timestampUltimaMuestra"],
-        "densidad":item["densidad"]
+        "densidad":item["densidad"],
+        "radio":item["radio"]
     }
 
 def favoritosEntity(entity) -> list:
