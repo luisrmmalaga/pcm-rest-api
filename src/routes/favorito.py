@@ -1,3 +1,5 @@
+import datetime
+
 from bson import ObjectId
 from fastapi import APIRouter, Response, status
 from starlette.status import HTTP_204_NO_CONTENT
@@ -56,6 +58,10 @@ def upsert_favourite(userId:str, latitude: float, longitude:float, timestampCrea
 @favorito.get('/favourites/{id}', response_model=list[Favorito], tags=["Favoritos"])
 def get_favourites_by_user_id(id: str):
     return favoritosEntity(connection.PCM.Favorito.find({"idUsuario":id}))
+
+@favorito.get('/favourites/{id}/from/{favName}', response_model=list[Favorito], tags=["Favoritos"])
+def get_favourites_by_user_id_and_fav_name(id: str, favName: str):
+    return favoritosEntity(connection.PCM.Favorito.find({"idUsuario":id, "nombre": favName}))
 
 @favorito.put('/favourite/{id}', response_model=Favorito, tags=["Favoritos"])
 def update_favourite(id: str, favorito: Favorito):

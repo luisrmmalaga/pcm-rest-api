@@ -5,6 +5,7 @@ from models.coordenadas import Coordenadas
 
 
 class Favorito(BaseModel):
+    
     _id: ObjectId
     idUsuario: str
     nombre: str

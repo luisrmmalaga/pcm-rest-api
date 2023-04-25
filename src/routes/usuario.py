@@ -37,3 +37,8 @@ def update_user(id: str, user: Usuario):
 def delete_user(id: str):
     userEntity(connection.PCM.Usuario.find_one_and_delete({"_id":ObjectId(id)}))
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+@user.delete('/users', status_code=status.HTTP_204_NO_CONTENT, tags=["Usuarios"])
+def delete_all_logs():
+    connection.PCM.Usuario.delete_many({})
+    return Response(status_code=HTTP_204_NO_CONTENT)

@@ -1,3 +1,5 @@
+import datetime
+
 from bson import ObjectId
 from fastapi import APIRouter, Response, status
 from pymongo import DESCENDING
@@ -15,11 +17,32 @@ logUser = APIRouter()
 def get_all_log_users():
     return logUsersEntity(connection.PCM.LogUsuario.find())
 
+@logUser.get('/logUsers/{timestamp}', response_model=list[LogUsuario], tags=["Log Usuarios"])
+def get_filtered_log_users(timestamp: float):
+    
+    
+    fecha_actual = datetime.datetime.now()
+    timestamp_actual = datetime.datetime.timestamp(fecha_actual)* 1000
+    timestamp_limite = timestamp_actual - (timestamp * 1000)
+
+    filtro = {
+        "timestamp": {
+            "$gte": timestamp_limite,
+            "$lt": timestamp_actual
+        }
+    }
+    
+    result = logUsersEntity(connection.PCM.LogUsuario.find(filtro))
+    return result
+
 @logUser.get('/logsIn/{latitud}/{longitud}', response_model=dict, tags=["Log Usuarios"])
 def get_logs_in_selected_location_radius(latitud: float, longitud:float):
     center = [longitud,latitud]
     users = connection.PCM.LogUsuario.distinct("idUsuario")
     radio = 100
+    fecha_actual = datetime.datetime.now()
+    timestamp_actual = datetime.datetime.timestamp(fecha_actual)* 1000
+    timestamp_limite = timestamp_actual - (86400 * 1000)
 
     logs = []
 
@@ -29,7 +52,11 @@ def get_logs_in_selected_location_radius(latitud: float, longitud:float):
             "coordenadas": {
                             "$geoWithin":
                               {"$centerSphere": [center, get_radians(radio)]}
-                        }
+            },
+            "timestamp": {
+                "$gte": timestamp_limite,
+                "$lt": timestamp_actual
+            }
         }
         log =  connection.PCM.LogUsuario.find(query).sort("timestamp", DESCENDING).limit(1)
         logs.extend(log)
@@ -37,7 +64,7 @@ def get_logs_in_selected_location_radius(latitud: float, longitud:float):
     userLogs = len(logs)
     density = round(userLogs/get_area_of_circle(radio* 0.001),2)
 
-    result = {"densidad":density,"data":logUsersEntity(logs)}
+    result = {"densidad":density,"usuarios":userLogs,"data":logUsersEntity(logs)}
 
     return result
 
@@ -45,6 +72,9 @@ def get_logs_in_selected_location_radius(latitud: float, longitud:float):
 def get_logs_in_favourite_radius(latitud: float, longitud:float, radio:int):
     center = [longitud,latitud]
     users = connection.PCM.LogUsuario.distinct("idUsuario")
+    fecha_actual = datetime.datetime.now()
+    timestamp_actual = datetime.datetime.timestamp(fecha_actual)* 1000
+    timestamp_limite = timestamp_actual - (86400 * 1000)
 
     logs = []
 
@@ -54,7 +84,11 @@ def get_logs_in_favourite_radius(latitud: float, longitud:float, radio:int):
             "coordenadas": {
                             "$geoWithin":
                               {"$centerSphere": [center, get_radians(radio)]}
-                        }
+            },
+            "timestamp": {
+                "$gte": timestamp_limite,
+                "$lt": timestamp_actual
+            }
         }
         log =  connection.PCM.LogUsuario.find(query).sort("timestamp", DESCENDING).limit(1)
         logs.extend(log)
@@ -62,7 +96,7 @@ def get_logs_in_favourite_radius(latitud: float, longitud:float, radio:int):
     userLogs = len(logs)
     density = round(userLogs/get_area_of_circle(radio* 0.001),2)
 
-    result = {"densidad":density, "data":logUsersEntity(logs)}
+    result = {"densidad":density,"usuarios":userLogs, "data":logUsersEntity(logs)}
 
     return result
 
