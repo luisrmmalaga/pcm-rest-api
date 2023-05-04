@@ -78,8 +78,8 @@ def calculate_trending(favName: str, idUsuario:str):
     elif len(values) == 1:
         res = values[0]['densidad'] 
     else:
-        res = values[0]['densidad'] - values[1]['densidad'] 
-
+        valor_inicial = values[1]['densidad']
+        res = round(((values[0]['densidad'] - valor_inicial) / valor_inicial) * 100)
     return res
 
 @checkpoint.delete('/checkpoints', status_code=status.HTTP_204_NO_CONTENT, tags=["Chekpoints"])

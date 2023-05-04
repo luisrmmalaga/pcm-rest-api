@@ -11,6 +11,7 @@ def job():
    favourites = get_all_favourites()
 
    for favourite in favourites:
+      print("**** Updating "+ favourite['_id'] +" ****")
       favouriteData = get_logs_in_favourite_radius(favourite['coordenadas']['latitud'],favourite['coordenadas']['longitud'],favourite['radio'])
 
       usuarios = favouriteData['usuarios']
@@ -31,5 +32,6 @@ def job():
 
       create_checkpoint(checkpoint)
       upsert_favourite(favourite['idUsuario'],favourite['coordenadas']['latitud'],favourite['coordenadas']['longitud'],favourite['timestampCreacion'],favorito)
+      print("**** Location updated "+ favourite['_id'] +" ****")
 
    print("------ Daily update done ------")
