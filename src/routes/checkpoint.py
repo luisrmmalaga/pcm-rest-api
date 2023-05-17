@@ -47,17 +47,19 @@ def get_checkpoints_by_userId(idUsuario:str):
     temp_dict = {}
 
     for obj in checkpoints:
-        favorito = connection.PCM.Favorito.find_one({"_id":ObjectId(obj['idFavorito'])})['nombre']
-        datos = {
-            'timestamp': obj['timestamp'],
-            'densidad': obj['densidad']
-        }
-        if favorito not in temp_dict:
-            temp_dict[favorito] = {
-                'favorito': favorito,
-                'datos': []
+        existe = connection.PCM.Favorito.find_one({"_id":ObjectId(obj['idFavorito'])}) is not None
+        if existe:
+            favorito = connection.PCM.Favorito.find_one({"_id":ObjectId(obj['idFavorito'])})['nombre']
+            datos = {
+                'timestamp': obj['timestamp'],
+                'densidad': obj['densidad']
             }
-        temp_dict[favorito]['datos'].append(datos)
+            if favorito not in temp_dict:
+                temp_dict[favorito] = {
+                    'favorito': favorito,
+                    'datos': []
+                }
+            temp_dict[favorito]['datos'].append(datos)
 
     return list(temp_dict.values())
 
